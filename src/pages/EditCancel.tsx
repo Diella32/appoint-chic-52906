@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface Booking {
   id: number;
+  room: string;
   staffName: string;
   date: string;
   startTime: string;
@@ -42,10 +43,6 @@ const EditCancel = () => {
     });
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB');
-  };
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
@@ -69,41 +66,38 @@ const EditCancel = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Staff Name</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Start Time</TableHead>
                     <TableHead>End Time</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead></TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {bookings.map((booking) => (
                     <TableRow key={booking.id} className="transition-colors duration-200">
-                      <TableCell className="font-medium">{booking.staffName}</TableCell>
-                      <TableCell>{formatDate(booking.date)}</TableCell>
+                      <TableCell>{booking.date}</TableCell>
                       <TableCell>{booking.startTime}</TableCell>
                       <TableCell>{booking.endTime}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEdit(booking)}
-                            className="transition-all duration-300"
-                          >
-                            <Pencil className="h-4 w-4 mr-1" />
-                            Edit
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(booking.id)}
-                            className="transition-all duration-300"
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Cancel
-                          </Button>
-                        </div>
+                      <TableCell>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={() => handleEdit(booking)}
+                          className="text-accent hover:text-accent/80 p-0"
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={() => handleDelete(booking.id)}
+                          className="text-accent hover:text-accent/80 p-0"
+                        >
+                          Cancel
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}

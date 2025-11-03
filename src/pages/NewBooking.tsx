@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const NewBooking = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [room, setRoom] = useState("");
   const [staffName, setStaffName] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -20,7 +22,7 @@ const NewBooking = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!staffName || !date || !startTime || !endTime) {
+    if (!room || !staffName || !date || !startTime || !endTime) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -33,6 +35,7 @@ const NewBooking = () => {
     const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
     const newBooking = {
       id: Date.now(),
+      room,
       staffName,
       date,
       startTime: `${startTime} ${startPeriod}`,
@@ -40,6 +43,11 @@ const NewBooking = () => {
     };
     bookings.push(newBooking);
     localStorage.setItem("bookings", JSON.stringify(bookings));
+
+    toast({
+      title: "Success",
+      description: "Booking created successfully",
+    });
 
     navigate("/booking-completed");
   };
@@ -61,7 +69,22 @@ const NewBooking = () => {
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="staffName">Staff Name</Label>
+              <Label>Room:</Label>
+              <Select value={room} onValueChange={setRoom}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select room" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="BoardRoom">Board Room</SelectItem>
+                  <SelectItem value="Operations">Operations</SelectItem>
+                  <SelectItem value="LargeScreen">Large Screen</SelectItem>
+                  <SelectItem value="Training">Training</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="staffName">Staff Name:</Label>
               <Input
                 id="staffName"
                 type="text"
@@ -73,64 +96,69 @@ const NewBooking = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="date">Date</Label>
+              <Label htmlFor="date">Date: (DD/MM/YYYY)</Label>
               <Input
                 id="date"
-                type="date"
+                type="text"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                placeholder="DD/MM/YYYY"
                 className="transition-all duration-300"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="startTime">Start Time</Label>
-                <div className="flex gap-2">
+                <Label htmlFor="startTime">Start Time:</Label>
+                <div className="flex gap-4 items-center">
                   <Input
                     id="startTime"
-                    type="time"
+                    type="text"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="flex-1 transition-all duration-300"
+                    placeholder="00:00"
+                    className="max-w-[120px] transition-all duration-300"
                   />
-                  <Select value={startPeriod} onValueChange={setStartPeriod}>
-                    <SelectTrigger className="w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="AM">AM</SelectItem>
-                      <SelectItem value="PM">PM</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <RadioGroup value={startPeriod} onValueChange={setStartPeriod} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="AM" id="start-am" />
+                      <Label htmlFor="start-am">AM</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="PM" id="start-pm" />
+                      <Label htmlFor="start-pm">PM</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endTime">End Time</Label>
-                <div className="flex gap-2">
+                <Label htmlFor="endTime">End Time:</Label>
+                <div className="flex gap-4 items-center">
                   <Input
                     id="endTime"
-                    type="time"
+                    type="text"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="flex-1 transition-all duration-300"
+                    placeholder="00:00"
+                    className="max-w-[120px] transition-all duration-300"
                   />
-                  <Select value={endPeriod} onValueChange={setEndPeriod}>
-                    <SelectTrigger className="w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="AM">AM</SelectItem>
-                      <SelectItem value="PM">PM</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <RadioGroup value={endPeriod} onValueChange={setEndPeriod} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="AM" id="end-am" />
+                      <Label htmlFor="end-am">AM</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="PM" id="end-pm" />
+                      <Label htmlFor="end-pm">PM</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
               </div>
             </div>
 
-            <Button type="submit" className="w-full transition-all duration-300 hover:shadow-[var(--shadow-hover)]">
-              Submit Booking
+            <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
+              Submit
             </Button>
           </form>
         </div>

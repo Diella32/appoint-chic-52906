@@ -18,7 +18,7 @@ const BookingCompleted = () => {
         <Button
           onClick={() => navigate("/dashboard")}
           size="lg"
-          className="transition-all duration-300 hover:shadow-[var(--shadow-hover)]"
+          className="bg-accent hover:bg-accent/90 text-accent-foreground"
         >
           Close
         </Button>

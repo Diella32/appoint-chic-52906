@@ -9,9 +9,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated");
+    const userRole = localStorage.getItem("userRole");
     const storedUsername = localStorage.getItem("username");
     
-    if (!isAuthenticated) {
+    if (!isAuthenticated || userRole !== "staff") {
       navigate("/");
       return;
     }
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("username");
+    localStorage.removeItem("userRole");
     navigate("/");
   };
 
@@ -59,9 +61,9 @@ const Dashboard = () => {
 
         <div className="text-center">
           <Button
-            variant="destructive"
+            variant="ghost"
             onClick={handleLogout}
-            className="transition-all duration-300 hover:shadow-[var(--shadow-hover)] inline-flex items-center gap-2"
+            className="text-accent hover:text-accent/80 inline-flex items-center gap-2"
           >
             <LogOut className="h-4 w-4" />
             Logout

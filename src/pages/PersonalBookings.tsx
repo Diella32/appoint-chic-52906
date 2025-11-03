@@ -6,6 +6,7 @@ import { ArrowLeft, LogOut } from "lucide-react";
 
 interface Booking {
   id: number;
+  room: string;
   staffName: string;
   date: string;
   startTime: string;
@@ -24,12 +25,8 @@ const PersonalBookings = () => {
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("username");
+    localStorage.removeItem("userRole");
     navigate("/");
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB');
   };
 
   return (
@@ -46,9 +43,9 @@ const PersonalBookings = () => {
           </Button>
           
           <Button
-            variant="destructive"
+            variant="ghost"
             onClick={handleLogout}
-            className="transition-all duration-300"
+            className="text-accent hover:text-accent/80"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Logout
@@ -65,7 +62,7 @@ const PersonalBookings = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Staff Name</TableHead>
+                    <TableHead>Room</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Start Time</TableHead>
                     <TableHead>End Time</TableHead>
@@ -74,8 +71,8 @@ const PersonalBookings = () => {
                 <TableBody>
                   {bookings.map((booking) => (
                     <TableRow key={booking.id} className="transition-colors duration-200">
-                      <TableCell className="font-medium">{booking.staffName}</TableCell>
-                      <TableCell>{formatDate(booking.date)}</TableCell>
+                      <TableCell className="font-medium">{booking.room || booking.staffName}</TableCell>
+                      <TableCell>{booking.date}</TableCell>
                       <TableCell>{booking.startTime}</TableCell>
                       <TableCell>{booking.endTime}</TableCell>
                     </TableRow>
