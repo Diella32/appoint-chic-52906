@@ -93,6 +93,7 @@ const AdminDashboard = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Staff Name</TableHead>
                 <TableHead>Staff ID</TableHead>
                 <TableHead>Room</TableHead>
                 <TableHead>Date</TableHead>
@@ -105,6 +106,7 @@ const AdminDashboard = () => {
             <TableBody>
               {bookings.map((booking, index) => (
                 <TableRow key={index}>
+                  <TableCell>{booking.staffName}</TableCell>
                   <TableCell>{booking.staffId}</TableCell>
                   <TableCell>{booking.room}</TableCell>
                   <TableCell>{booking.date}</TableCell>
