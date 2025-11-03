@@ -31,6 +31,12 @@ const ManageBooking = () => {
   }
 
   const handleApprove = () => {
+    const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+    const updatedBookings = bookings.map((b: any) => 
+      b.id === booking.id ? { ...b, status: "Approved" } : b
+    );
+    localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+    
     toast({
       title: "Booking Approved",
       description: "The booking has been approved successfully.",
@@ -39,6 +45,12 @@ const ManageBooking = () => {
   };
 
   const handleDecline = () => {
+    const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+    const updatedBookings = bookings.map((b: any) => 
+      b.id === booking.id ? { ...b, status: "Declined" } : b
+    );
+    localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+    
     toast({
       title: "Booking Declined",
       description: "The booking has been declined.",
@@ -48,6 +60,10 @@ const ManageBooking = () => {
   };
 
   const handleDelete = () => {
+    const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+    const updatedBookings = bookings.filter((b: any) => b.id !== booking.id);
+    localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+    
     toast({
       title: "Booking Deleted",
       description: "The booking has been permanently deleted.",

@@ -31,15 +31,20 @@ const NewBooking = () => {
       return;
     }
 
+    // Get current user's staff ID
+    const currentUser = localStorage.getItem("username") || "Unknown";
+    
     // Save booking to localStorage
     const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
     const newBooking = {
       id: Date.now(),
-      room,
+      staffId: currentUser,
       staffName,
+      room,
       date,
       startTime: `${startTime} ${startPeriod}`,
       endTime: `${endTime} ${endPeriod}`,
+      status: "Pending" as const,
     };
     bookings.push(newBooking);
     localStorage.setItem("bookings", JSON.stringify(bookings));

@@ -6,21 +6,32 @@ import { ArrowLeft, LogOut } from "lucide-react";
 
 interface Booking {
   id: number;
-  room: string;
+  staffId: string;
   staffName: string;
+  room: string;
   date: string;
   startTime: string;
   endTime: string;
+  status: "Pending" | "Approved" | "Declined";
 }
 
 const PersonalBookings = () => {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const currentUser = localStorage.getItem("username") || "";
 
   useEffect(() => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-    setBookings(storedBookings);
-  }, []);
+    const loadBookings = () => {
+      const allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+      const userBookings = allBookings.filter((b: Booking) => b.staffId === currentUser);
+      setBookings(userBookings);
+    };
+
+    loadBookings();
+    
+    window.addEventListener("focus", loadBookings);
+    return () => window.removeEventListener("focus", loadBookings);
+  }, [currentUser]);
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
@@ -61,20 +72,30 @@ const PersonalBookings = () => {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Room</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Start Time</TableHead>
-                    <TableHead>End Time</TableHead>
-                  </TableRow>
+            <TableRow>
+              <TableHead>Room</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Start Time</TableHead>
+              <TableHead>End Time</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
                 </TableHeader>
                 <TableBody>
                   {bookings.map((booking) => (
                     <TableRow key={booking.id} className="transition-colors duration-200">
-                      <TableCell className="font-medium">{booking.room || booking.staffName}</TableCell>
+                      <TableCell className="font-medium">{booking.room}</TableCell>
                       <TableCell>{booking.date}</TableCell>
                       <TableCell>{booking.startTime}</TableCell>
                       <TableCell>{booking.endTime}</TableCell>
+                      <TableCell>
+                        <span className={
+                          booking.status === "Approved" ? "text-green-600" :
+                          booking.status === "Declined" ? "text-accent" :
+                          "text-yellow-600"
+                        }>
+                          {booking.status}
+                        </span>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

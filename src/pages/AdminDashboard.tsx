@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/table";
 
 interface Booking {
+  id: number;
   staffId: string;
+  staffName: string;
   room: string;
   date: string;
   startTime: string;
@@ -23,12 +25,7 @@ interface Booking {
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
-  const [bookings] = useState<Booking[]>([
-    { staffId: "000001", room: "BoardRoom", date: "22/04/2025", startTime: "09:30 AM", endTime: "11:00 AM", status: "Pending" },
-    { staffId: "000002", room: "Operations", date: "02/04/2025", startTime: "02:00 PM", endTime: "03:00 PM", status: "Approved" },
-    { staffId: "000003", room: "Large Screen", date: "08/04/2025", startTime: "10:00 AM", endTime: "12:00 PM", status: "Declined" },
-    { staffId: "000005", room: "Training", date: "07/04/2025", startTime: "08:30 AM", endTime: "10:00 AM", status: "Pending" },
-  ]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated");
@@ -43,6 +40,18 @@ const AdminDashboard = () => {
     if (storedUsername) {
       setUsername(storedUsername);
     }
+
+    // Load bookings from localStorage
+    const loadBookings = () => {
+      const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+      setBookings(storedBookings);
+    };
+
+    loadBookings();
+    
+    // Reload bookings when window gains focus (in case they were updated in another tab)
+    window.addEventListener("focus", loadBookings);
+    return () => window.removeEventListener("focus", loadBookings);
   }, [navigate]);
 
   const handleLogout = () => {

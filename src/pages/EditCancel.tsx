@@ -7,27 +7,36 @@ import { useToast } from "@/hooks/use-toast";
 
 interface Booking {
   id: number;
-  room: string;
+  staffId: string;
   staffName: string;
+  room: string;
   date: string;
   startTime: string;
   endTime: string;
+  status: "Pending" | "Approved" | "Declined";
 }
 
 const EditCancel = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const currentUser = localStorage.getItem("username") || "";
 
   useEffect(() => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-    setBookings(storedBookings);
-  }, []);
+    loadBookings();
+  }, [currentUser]);
+
+  const loadBookings = () => {
+    const allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+    const userBookings = allBookings.filter((b: Booking) => b.staffId === currentUser);
+    setBookings(userBookings);
+  };
 
   const handleDelete = (id: number) => {
-    const updatedBookings = bookings.filter((booking) => booking.id !== id);
+    const allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+    const updatedBookings = allBookings.filter((b: Booking) => b.id !== id);
     localStorage.setItem("bookings", JSON.stringify(updatedBookings));
-    setBookings(updatedBookings);
+    loadBookings();
     
     toast({
       title: "Booking Cancelled",
@@ -66,28 +75,29 @@ const EditCancel = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Room</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Start Time</TableHead>
                     <TableHead>End Time</TableHead>
-                    <TableHead></TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {bookings.map((booking) => (
                     <TableRow key={booking.id} className="transition-colors duration-200">
+                      <TableCell>{booking.room}</TableCell>
                       <TableCell>{booking.date}</TableCell>
                       <TableCell>{booking.startTime}</TableCell>
                       <TableCell>{booking.endTime}</TableCell>
                       <TableCell>
-                        <Button
-                          variant="link"
-                          size="sm"
-                          onClick={() => handleEdit(booking)}
-                          className="text-accent hover:text-accent/80 p-0"
-                        >
-                          Edit
-                        </Button>
+                        <span className={
+                          booking.status === "Approved" ? "text-green-600" :
+                          booking.status === "Declined" ? "text-accent" :
+                          "text-yellow-600"
+                        }>
+                          {booking.status}
+                        </span>
                       </TableCell>
                       <TableCell>
                         <Button
